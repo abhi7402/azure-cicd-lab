@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My CI/CD App</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      width: 500px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 { color: #0078d4; margin-bottom: 8px; }
+    .version { color: #888; font-size: 13px; margin-bottom: 24px; }
+    .input-row { display: flex; gap: 10px; margin-bottom: 20px; }
+    input {
+      flex: 1; padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px; font-size: 14px;
+    }
+    input:focus { outline: none; border-color: #0078d4; }
+    button {
+      padding: 12px 20px;
+      background: #0078d4; color: white;
+      border: none; border-radius: 8px;
+      cursor: pointer; font-size: 14px;
+    }
+    button:hover { background: #006cbf; }
+    .todo {
+      padding: 14px;
+      background: #f8f9ff;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border-left: 4px solid #0078d4;
+      font-size: 14px;
+    }
+    .footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+      font-size: 12px; color: #aaa;
+      text-align: center;
+    }
+    .status { 
+      display: inline-block;
+      background: #e6f4ea; color: #137333;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: bold;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🚀 Azure CI/CD Lab</h1>
+    <div class="version">Version 1.0 — Deployed via GitHub Actions</div>
+    <span class="status">● LIVE</span>
+    <div class="input-row">
+      <input id="taskInput" placeholder="Add a new task..." />
+      <button onclick="addTodo()">Add</button>
+    </div>
+    <div id="todos"></div>
+    <div class="footer">
+      GitHub → GitHub Actions → Azure App Service
+    </div>
+  </div>
+
+  <script>
+    async function loadTodos() {
+      try {
+        const res = await fetch('/api/todos');
+        const todos = await res.json();
+        document.getElementById('todos').innerHTML = todos
+          .map(t => `<div class="todo">✅ ${t.task}</div>`)
+          .join('');
+      } catch(e) {
+        document.getElementById('todos').innerHTML = 
+          '<div style="color:red">❌ API Error</div>';
+      }
+    }
+
+    async function addTodo() {
+      const task = document.getElementById('taskInput').value;
+      if (!task) return;
+      await fetch('/api/todos', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ task })
+      });
+      document.getElementById('taskInput').value = '';
+      loadTodos();
+    }
+
+    loadTodos();
+  </script>
+</body>
+</html>
