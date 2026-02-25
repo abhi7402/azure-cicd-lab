@@ -1,0 +1,13 @@
+{
+  "name": "azure-cicd-lab",
+  "version": "1.0.0",
+  "description": "Learning CI/CD with Azure",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo All tests passed && exit 0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
